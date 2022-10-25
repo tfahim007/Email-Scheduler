@@ -2,13 +2,63 @@ package com.example.timer.controller;
 
 import com.example.timer.job.EmailJob;
 import com.example.timer.payload.EmailRequest;
+import com.example.timer.payload.EmailResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Date;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
+@Slf4j
+@RestController
 public class EmailSchedulerController {
+
+    @Autowired
+    private Scheduler scheduler;
+    @GetMapping
+    public String hello(){
+        return "Hello";
+    }
+    @PostMapping("/schedule/email")
+    public ResponseEntity<EmailResponse> scheduleEmail(@RequestBody EmailRequest emailRequest){
+        try{
+            ZonedDateTime dateTime = ZonedDateTime.of(emailRequest.getDateTime(),emailRequest.getTimeZone());
+            if(dateTime.isBefore(ZonedDateTime.now())){
+                EmailResponse emailResponse = new EmailResponse(false,"Time must be before schedule");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(emailResponse);
+            }
+            JobDetail jobDetail = buildJobDetail(emailRequest);
+            Trigger trigger = buildTrigger(jobDetail,dateTime);
+            scheduler.scheduleJob(jobDetail,trigger);
+            EmailResponse emailResponse = new EmailResponse(
+                    true,jobDetail.getKey().getName(),jobDetail.getKey().getGroup(),
+                    "Email Scheduled"
+            );
+
+            return ResponseEntity.ok(emailResponse);
+        } catch (SchedulerException e) {
+            log.error("Error while scheduling");
+            EmailResponse emailResponse = new EmailResponse(false,"Error while Scheduling");
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(emailResponse);
+        }
+
+
+
+
+    }
 
     private JobDetail buildJobDetail(EmailRequest emailRequest){
         JobDataMap jobDataMap = new JobDataMap();
