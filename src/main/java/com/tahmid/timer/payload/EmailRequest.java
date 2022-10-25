@@ -1,4 +1,4 @@
-package com.example.timer.payload;
+package com.tahmid.timer.payload;
 
 import com.sun.istack.NotNull;
 import lombok.Getter;

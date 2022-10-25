@@ -1,21 +1,19 @@
-package com.example.timer.controller;
+package com.tahmid.timer.controller;
 
-import com.example.timer.job.EmailJob;
-import com.example.timer.payload.EmailRequest;
-import com.example.timer.payload.EmailResponse;
+import com.tahmid.timer.job.EmailJob;
+import com.tahmid.timer.payload.EmailRequest;
+import com.tahmid.timer.payload.EmailResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Date;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 

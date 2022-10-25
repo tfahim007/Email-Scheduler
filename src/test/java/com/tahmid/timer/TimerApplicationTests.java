@@ -1,4 +1,4 @@
-package com.example.timer;
+package com.tahmid.timer;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

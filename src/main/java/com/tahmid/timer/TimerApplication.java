@@ -1,4 +1,4 @@
-package com.example.timer;
+package com.tahmid.timer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
